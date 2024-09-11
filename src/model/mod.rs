@@ -15,6 +15,8 @@ use crate::{
     param::LanguageModel,
 };
 
+pub const GEMINI_API_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
+
 pub struct Gemini {
     pub key: String,
     pub url: String,
@@ -24,13 +26,11 @@ pub struct Gemini {
 }
 
 impl Gemini {
-    const GEMINI_API_URL: &'static str = "https://generativelanguage.googleapis.com/v1beta/models/";
-
     /// 创建新实例
     pub fn new(key: String, model: LanguageModel) -> Self {
         let client = Client::new();
         let contents = Vec::new();
-        let url = format!("{}{}:generateContent", Self::GEMINI_API_URL, model);
+        let url = format!("{}{}:generateContent", GEMINI_API_URL, model);
         Self {
             key,
             url,

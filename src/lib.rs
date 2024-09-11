@@ -3,48 +3,33 @@ pub mod model;
 pub mod param;
 
 use anyhow::{bail, Result};
-use body::{
-    request::{GeminiRequestBody, GenerationConfig},
-    response::GenerateContentResponse,
-    Content, Part, Role,
-};
+use body::response::{Model, ModelsResponse};
 use reqwest::Client;
 
-const GEMINI_API_URL: &str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-
-pub async fn chat_once(content: String, key: String) -> Result<String> {
-    // 创建一个客户端实例
+/// Get a list of available models from Gemini API
+pub async fn get_models(key: String) -> Result<Vec<Model>> {
+    let url = "https://generativelanguage.googleapis.com/v1beta/models";
+    let url = format!("{}?key={}", url, key);
     let client = Client::new();
-    let url = format!("{}?key={}", GEMINI_API_URL, key);
-    let body = GeminiRequestBody {
-        contents: vec![Content {
-            role: Some(Role::User),
-            parts: vec![Part::Text(content)],
-        }],
-        generation_config: Some(GenerationConfig::default()),
-        ..Default::default()
-    };
-    let body_json = serde_json::to_string(&body)?;
-    // 发送 GET 请求，并添加自定义头部
-    let response = client
-        .post(url)
-        .header("Content-Type", "application/json")
-        .body(body_json)
-        .send()
-        .await?;
-    let response_text = response.text().await?;
-    // 解析响应内容
-    let response_json: GenerateContentResponse = serde_json::from_str(&response_text)?;
-    match response_json.candidates[0].content.parts[0].clone().clone() {
-        Part::Text(s) => Ok(s),
-        _ => bail!("Unexpected response format"),
+    let response = client.get(url).send().await?;
+    if response.status().is_success() {
+        let response_text = response.text().await?;
+        let response: ModelsResponse = serde_json::from_str(&response_text)?;
+        Ok(response.models)
+    } else {
+        bail!("Failed to get models")
     }
 }
 
 #[cfg(test)]
 mod tests {
+
     use std::env;
 
+    use body::{
+        request::{GeminiRequestBody, GenerationConfig},
+        Content, Part, Role,
+    };
     use serde::{Deserialize, Serialize};
 
     use super::*;
@@ -68,14 +53,12 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_chat() -> Result<()> {
+    async fn test_get_models() {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
-        let content = "你好".to_owned();
-        let response = chat_once(content, key.unwrap()).await?;
-        assert!(!response.is_empty());
-        println!("Response: {}", response);
-        Ok(())
+        let models = get_models(key.unwrap()).await.unwrap();
+        println!("{:#?}", models);
+        assert!(!models.is_empty());
     }
 
     #[test]

@@ -246,3 +246,66 @@ pub enum BlockReason {
     #[serde(rename = "PROHIBITED_CONTENT")]
     ProhibitedContent,
 }
+
+/// Response from ListModel containing a paginated list of Models.
+///
+/// If successful, the response body contains data with the following structure
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ModelsResponse {
+    /// The returned Models.
+    pub models: Vec<Model>,
+    /// A token, which can be sent as pageToken to retrieve the next page.
+    /// If this field is omitted, there are no more pages.
+    #[serde(skip_serializing_if = "Option::is_none", rename = "nextPageToken")]
+    pub next_page_token: Option<String>,
+}
+
+/// Information about a Generative Language Model.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Model {
+    /// Required. The resource name of the Model. Refer to Model variants for all allowed values.
+    pub name: String,
+    /// Required. The name of the base model, pass this to the generation request.
+    #[serde(skip_serializing_if = "Option::is_none", rename = "baseModelId")]
+    pub base_model_id: Option<String>,
+    /// Required. The version number of the model.
+    /// This represents the major version (1.0 or 1.5)
+    pub version: String,
+    /// The human-readable name of the model. E.g. "Gemini 1.5 Flash".
+    /// The name can be up to 128 characters long and can consist of any UTF-8 characters.
+    #[serde(rename = "displayName")]
+    pub display_name: String,
+    /// A short description of the model.
+    pub description: String,
+    /// Maximum number of input tokens allowed for this model.
+    #[serde(rename = "inputTokenLimit")]
+    pub input_token_limit: isize,
+    /// Maximum number of output tokens available for this model.
+    #[serde(rename = "outputTokenLimit")]
+    pub output_token_limit: isize,
+    /// The model's supported generation methods.
+    /// The corresponding API method names are defined as Pascal case strings, such as generateMessage and
+    /// generateContent.
+    #[serde(rename = "supportedGenerationMethods")]
+    pub supported_generation_methods: Vec<String>,
+    /// Controls the randomness of the output.
+    /// Values can range over [0.0,maxTemperature], inclusive. A higher value will produce responses that are more
+    /// varied, while a value closer to 0.0 will typically result in less surprising responses from the model. This
+    /// value specifies default to be used by the backend while making the call to the model.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub temperature: Option<f64>,
+    /// The maximum temperature this model can use.
+    #[serde(skip_serializing_if = "Option::is_none", rename = "maxTemperature")]
+    pub max_temperature: Option<f64>,
+    /// For Nucleus sampling.
+    /// Nucleus sampling considers the smallest set of tokens whose probability sum is at least topP. This value
+    /// specifies default to be used by the backend while making the call to the model.
+    #[serde(skip_serializing_if = "Option::is_none", rename = "topP")]
+    pub top_p: Option<f64>,
+    /// For Top-k sampling.
+    /// Top-k sampling considers the set of topK most probable tokens. This value specifies default to be used by the
+    /// backend while making the call to the model. If empty, indicates the model doesn't use top-k sampling, and topK
+    /// isn't allowed as a generation parameter.
+    #[serde(skip_serializing_if = "Option::is_none", rename = "topK")]
+    pub top_k: Option<isize>,
+}
