@@ -39,7 +39,7 @@ mod tests {
         let body = GeminiRequestBody {
             contents: vec![Content {
                 role: Some(Role::User),
-                parts: vec![Part::Text("Hello, world!".to_owned())],
+                parts: vec![Part::Text("Hello, world!".into())],
             }],
             generation_config: Some(GenerationConfig::default()),
             ..Default::default()
@@ -80,7 +80,7 @@ mod tests {
             assert_eq!(serialized, r#"{"Move":{"x":10,"y":20}}"#);
         }
         {
-            let msg = Message::Write("HelloWorld".to_owned());
+            let msg = Message::Write("HelloWorld".into());
             let serialized = serde_json::to_string(&msg).unwrap();
             assert_eq!(serialized, r#"{"Write":"HelloWorld"}"#);
         }

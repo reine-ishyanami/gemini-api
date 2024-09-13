@@ -1,8 +1,14 @@
 use std::fmt;
 
+use serde::{Deserialize, Serialize};
+#[derive(Clone, Default, Serialize, Deserialize)]
 pub enum LanguageModel {
+    #[serde(rename = "gemini-1.0-pro")]
     Gemini1_0Pro,
+    #[serde(rename = "gemini-1.5-pro")]
     Gemini1_5Pro,
+    #[serde(rename = "gemini-1.5-flash")]
+    #[default]
     Gemini1_5Flash,
     Custom(String),
 }

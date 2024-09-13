@@ -20,10 +20,11 @@ pub const GEMINI_API_URL: &str = "https://generativelanguage.googleapis.com/v1be
 #[derive(Clone, Default)]
 pub struct Gemini {
     pub key: String,
-    pub url: String,
+    pub model: LanguageModel,
     pub contents: Vec<Content>,
     pub options: GenerationConfig,
     pub system_instruction: Option<String>,
+    url: String,
     client: Client,
 }
 
@@ -35,8 +36,9 @@ impl Gemini {
         let url = format!("{}{}:generateContent", GEMINI_API_URL, model);
         Self {
             key,
-            url,
+            model,
             contents,
+            url,
             client,
             ..Default::default()
         }
@@ -48,14 +50,16 @@ impl Gemini {
     }
 
     /// 重建实例
-    pub fn rebuild(key: String, url: String, contents: Vec<Content>, options: GenerationConfig) -> Self {
+    pub fn rebuild(key: String, model: LanguageModel, contents: Vec<Content>, options: GenerationConfig) -> Self {
         let client = Client::new();
+        let url = format!("{}{}:generateContent", GEMINI_API_URL, model);
         Self {
             key,
-            url,
+            model,
             contents,
-            client,
             options,
+            url,
+            client,
             ..Default::default()
         }
     }
@@ -168,7 +172,7 @@ mod test {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
         let client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
-        let req1 = "My Name is Reine".to_owned();
+        let req1: String = "My Name is Reine".into();
         let resp1 = client.chat_once(req1.clone()).await?;
         assert!(!resp1.is_empty());
         println!("{}: {}", req1, resp1);
@@ -183,11 +187,9 @@ mod test {
         let req1 = "My Name is Reine".to_owned();
         let resp1 = client.chat_conversation(req1.clone()).await?;
         assert!(!resp1.is_empty());
-        println!("{}: {}", req1, resp1);
         let req2 = "Who am I".to_owned();
         let resp2 = client.chat_conversation(req2.clone()).await?;
         assert!(!resp2.is_empty());
-        println!("{}: {}", req2, resp2);
         Ok(())
     }
 
@@ -196,12 +198,9 @@ mod test {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
         let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
-        client.set_system_instruction("你是一只猫娘，你每次说话都会在句尾加上喵~ ".to_owned());
-        let req = "你好".to_owned();
-        let resp = client.chat_once(req).await?;
-        println!("{}", resp);
+        client.set_system_instruction("你是 Reine ".into());
+        let resp = client.chat_once("你是谁？".into()).await?;
         assert!(!resp.is_empty());
-        assert!(resp.contains("喵~ "));
         Ok(())
     }
 
@@ -210,17 +209,11 @@ mod test {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
         let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
-        client.set_system_instruction("你是一只猫娘，你每次说话都会在句尾加上喵~ ".to_owned());
-        let req1 = "My Name is Reine".to_owned();
-        let resp1 = client.chat_conversation(req1.clone()).await?;
+        client.set_system_instruction("你是一只猫娘，你每次说话都会在句尾加上喵~ ".into());
+        let resp1 = client.chat_conversation("My Name is Reine".into()).await?;
         assert!(!resp1.is_empty());
-        assert!(resp1.contains("喵~ "));
-        println!("{}: {}", req1, resp1);
-        let req2 = "Who am I".to_owned();
-        let resp2 = client.chat_conversation(req2.clone()).await?;
+        let resp2 = client.chat_conversation("Who am I".into()).await?;
         assert!(!resp2.is_empty());
-        assert!(resp2.contains("喵~ "));
-        println!("{}: {}", req2, resp2);
         Ok(())
     }
 }

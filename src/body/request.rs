@@ -107,7 +107,7 @@ impl Default for GenerationConfig {
             top_k: Some(64),
             top_p: Some(0.95),
             max_output_tokens: Some(8192),
-            response_mime_type: Some("text/plain".to_owned()),
+            response_mime_type: Some("text/plain".into()),
             stop_sequences: None,
             response_schema: None,
             candidate_count: None,
