@@ -23,3 +23,15 @@ impl fmt::Display for LanguageModel {
         }
     }
 }
+
+/// 实现 String 与 LanguageModel 之间的转换
+impl From<String> for LanguageModel {
+    fn from(val: String) -> Self {
+        match val.as_str() {
+            "models/gemini-1.0-pro" => LanguageModel::Gemini1_0Pro,
+            "models/gemini-1.5-pro" => LanguageModel::Gemini1_5Pro,
+            "models/gemini-1.5-flash" => LanguageModel::Gemini1_5Flash,
+            _ => LanguageModel::Custom(val),
+        }
+    }
+}

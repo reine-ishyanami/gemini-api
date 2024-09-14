@@ -19,7 +19,7 @@ pub struct Detail {
     pub type0: String,
     pub reason: String,
     pub domain: String,
-    pub metadate: Metadata,
+    pub metadata: Metadata,
 }
 
 #[derive(Serialize, Deserialize)]
