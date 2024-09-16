@@ -1,6 +1,7 @@
 pub mod body;
 pub mod model;
 pub mod param;
+mod utils;
 
 use anyhow::{bail, Result};
 use body::response::{Model, ModelsResponse};

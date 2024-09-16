@@ -39,6 +39,7 @@ pub enum Part {
     #[serde(rename = "text")]
     Text(String),
     /// Inline media bytes.
+    #[serde(rename = "inline_data")]
     InlineData {
         /// The IANA standard MIME type of the source data. Examples: - image/png - image/jpeg If an unsupported MIME
         /// type is provided, an error will be returned.
