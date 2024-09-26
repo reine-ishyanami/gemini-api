@@ -29,7 +29,7 @@ pub struct Candidate {
     pub content: Content,
     /// Optional. Output only. The reason why the model stopped generating tokens.
     /// If empty, the model has not stopped generating tokens.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "finishReason")]
+    #[serde(rename = "finishReason")]
     pub finish_reason: Option<FinishReason>,
     /// List of ratings for the safety of a response candidate.
     /// There is at most one rating per category.
@@ -159,17 +159,15 @@ pub struct CitationMetadata {
 pub struct CitationSource {
     /// Optional. Start of segment of the response that is attributed to this source.
     /// Index indicates the start of the segment, measured in bytes.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "startIndex")]
+    #[serde(rename = "startIndex")]
     pub start_index: Option<isize>,
     /// Optional. End of the attributed segment, exclusive.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "endIndex")]
+    #[serde(rename = "endIndex")]
     pub end_index: Option<isize>,
     /// Optional. URI that is attributed as a source for a portion of the text.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
     /// Optional. License for the GitHub project that is attributed as a source for segment.
     /// License info is required for code citations.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<String>,
 }
 
@@ -220,7 +218,7 @@ pub struct SemanticRetrieverChunk {
 #[derive(Serialize, Deserialize)]
 pub struct PromptFeedback {
     /// Optional. If set, the prompt was blocked and no candidates are returned. Rephrase the prompt.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "blockReason")]
+    #[serde(rename = "blockReason")]
     pub block_reason: Option<BlockReason>,
     /// Ratings for safety of the prompt. There is at most one rating per category.
     #[serde(rename = "safetyRatings")]
@@ -256,7 +254,7 @@ pub struct ModelsResponse {
     pub models: Vec<Model>,
     /// A token, which can be sent as pageToken to retrieve the next page.
     /// If this field is omitted, there are no more pages.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "nextPageToken")]
+    #[serde(rename = "nextPageToken")]
     pub next_page_token: Option<String>,
 }
 
@@ -266,7 +264,7 @@ pub struct Model {
     /// Required. The resource name of the Model. Refer to Model variants for all allowed values.
     pub name: String,
     /// Required. The name of the base model, pass this to the generation request.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "baseModelId")]
+    #[serde(rename = "baseModelId")]
     pub base_model_id: Option<String>,
     /// Required. The version number of the model.
     /// This represents the major version (1.0 or 1.5)
@@ -292,20 +290,19 @@ pub struct Model {
     /// Values can range over [0.0,maxTemperature], inclusive. A higher value will produce responses that are more
     /// varied, while a value closer to 0.0 will typically result in less surprising responses from the model. This
     /// value specifies default to be used by the backend while making the call to the model.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub temperature: Option<f64>,
     /// The maximum temperature this model can use.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "maxTemperature")]
+    #[serde(rename = "maxTemperature")]
     pub max_temperature: Option<f64>,
     /// For Nucleus sampling.
     /// Nucleus sampling considers the smallest set of tokens whose probability sum is at least topP. This value
     /// specifies default to be used by the backend while making the call to the model.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "topP")]
+    #[serde(rename = "topP")]
     pub top_p: Option<f64>,
     /// For Top-k sampling.
     /// Top-k sampling considers the set of topK most probable tokens. This value specifies default to be used by the
     /// backend while making the call to the model. If empty, indicates the model doesn't use top-k sampling, and topK
     /// isn't allowed as a generation parameter.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "topK")]
+    #[serde(rename = "topK")]
     pub top_k: Option<isize>,
 }
