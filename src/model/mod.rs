@@ -309,6 +309,7 @@ mod test {
     use super::*;
 
     #[tokio::test]
+    #[ignore]
     async fn test_chat_once() -> Result<()> {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -321,6 +322,7 @@ mod test {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_chat_conversation() -> Result<()> {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -335,6 +337,7 @@ mod test {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_chat_with_system_instruction() -> Result<()> {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -346,6 +349,7 @@ mod test {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_chat_conversation_with_system_instruction() -> Result<()> {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -359,6 +363,7 @@ mod test {
     }
 
     #[tokio::test]
+    #[ignore]
     #[cfg(feature = "image_analysis")]
     async fn test_image_analysis() -> Result<()> {
         let key = env::var("GEMINI_KEY");
@@ -374,6 +379,7 @@ mod test {
     }
 
     #[tokio::test]
+    #[ignore]
     #[cfg(feature = "image_analysis")]
     async fn test_image_analysis_network() -> Result<()> {
         let key = env::var("GEMINI_KEY");

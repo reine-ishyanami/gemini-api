@@ -305,6 +305,7 @@ mod test {
     use super::*;
 
     #[test]
+    #[ignore]
     fn test_chat_once() {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -316,6 +317,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_chat_conversation() {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -331,6 +333,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_chat_with_system_instruction() -> Result<()> {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -342,6 +345,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_chat_conversation_with_system_instruction() -> Result<()> {
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
@@ -355,6 +359,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     #[cfg(feature = "image_analysis")]
     fn test_image_analysis() -> Result<()> {
         let key = env::var("GEMINI_KEY");
@@ -368,6 +373,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     #[cfg(feature = "image_analysis")]
     fn test_image_analysis_network() -> Result<()> {
         let key = env::var("GEMINI_KEY");
