@@ -163,28 +163,9 @@ impl Gemini {
     /// 图片分析
     #[cfg(feature = "image_analysis")]
     pub async fn image_analysis(&self, image_path: String, text: String) -> Result<String> {
-        use base64::{engine::general_purpose, Engine as _};
-        use image::EncodableLayout;
-        use std::{fs::File, io::Read};
+        use crate::utils::image::sync::get_image_type_and_base64_string;
 
-        use crate::utils::image::guess_image_format;
-
-        let (image_type, base64_string) = if image_path.starts_with("https://") || image_path.starts_with("http://") {
-            let response = self.client.get(image_path).send().await?;
-            if response.status().is_success() {
-                let bytes = response.bytes().await?; // 读取整个响应体为字节
-                let base64_string = general_purpose::STANDARD.encode(&bytes);
-                (guess_image_format(bytes.as_bytes()), base64_string)
-            } else {
-                bail!("Failed to download image, status: {}", response.status());
-            }
-        } else {
-            let mut buffer = Vec::new();
-            let mut file = File::open(image_path)?;
-            file.read_to_end(&mut buffer)?;
-            let base64_string = general_purpose::STANDARD.encode(&buffer);
-            (guess_image_format(buffer.as_slice()), base64_string)
-        };
+        let (image_type, base64_string) = get_image_type_and_base64_string(image_path).await?;
         let url = format!("{}?key={}", self.url, self.key);
 
         // 请求内容
