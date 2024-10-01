@@ -25,19 +25,19 @@ pub fn guess_image_format(buffer: &[u8]) -> String {
 }
 
 /// 猜测图片类型以及返回图片对应base64编码字符串
-pub fn get_image_type_and_base64_string(image_path: String) -> Result<(String, String)> {
+pub async fn get_image_type_and_base64_string(image_path: String) -> Result<(String, String)> {
     use base64::{engine::general_purpose, Engine as _};
     use image::EncodableLayout;
     use std::{fs::File, io::Read};
 
     use crate::utils::image::guess_image_format;
 
-    let client = reqwest::blocking::Client::new();
+    let client = reqwest::Client::new();
 
     if image_path.starts_with("https://") || image_path.starts_with("http://") {
-        let response = client.get(image_path).send()?;
+        let response = client.get(image_path).send().await?;
         if response.status().is_success() {
-            let bytes = response.bytes()?; // 读取整个响应体为字节
+            let bytes = response.bytes().await?; // 读取整个响应体为字节
             let base64_string = general_purpose::STANDARD.encode(&bytes);
             Ok((guess_image_format(bytes.as_bytes()), base64_string))
         } else {
@@ -52,23 +52,23 @@ pub fn get_image_type_and_base64_string(image_path: String) -> Result<(String, S
     }
 }
 
-pub mod sync {
+pub mod blocking {
     use super::*;
 
     /// 猜测图片类型以及返回图片对应base64编码字符串
-    pub async fn get_image_type_and_base64_string(image_path: String) -> Result<(String, String)> {
+    pub fn get_image_type_and_base64_string(image_path: String) -> Result<(String, String)> {
         use base64::{engine::general_purpose, Engine as _};
         use image::EncodableLayout;
         use std::{fs::File, io::Read};
 
         use crate::utils::image::guess_image_format;
 
-        let client = reqwest::Client::new();
+        let client = reqwest::blocking::Client::new();
 
         if image_path.starts_with("https://") || image_path.starts_with("http://") {
-            let response = client.get(image_path).send().await?;
+            let response = client.get(image_path).send()?;
             if response.status().is_success() {
-                let bytes = response.bytes().await?; // 读取整个响应体为字节
+                let bytes = response.bytes()?; // 读取整个响应体为字节
                 let base64_string = general_purpose::STANDARD.encode(&bytes);
                 Ok((guess_image_format(bytes.as_bytes()), base64_string))
             } else {

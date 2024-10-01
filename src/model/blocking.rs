@@ -161,7 +161,7 @@ impl Gemini {
     /// 可传入本地图片路径以及网络图片路径
     #[cfg(feature = "image_analysis")]
     pub fn image_analysis(&self, image_path: String, text: String) -> Result<String> {
-        use crate::utils::image::get_image_type_and_base64_string;
+        use crate::utils::image::blocking::get_image_type_and_base64_string;
 
         let (image_type, base64_string) = get_image_type_and_base64_string(image_path).unwrap();
         let url = format!("{}?key={}", self.url, self.key);
@@ -233,6 +233,7 @@ impl Gemini {
         let url = format!("{}?key={}", self.url, self.key);
 
         // 请求内容
+        // 先文本后图片
         self.contents.push(Content {
             role: Some(Role::User),
             parts: vec![

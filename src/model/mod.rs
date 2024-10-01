@@ -163,7 +163,7 @@ impl Gemini {
     /// 图片分析
     #[cfg(feature = "image_analysis")]
     pub async fn image_analysis(&self, image_path: String, text: String) -> Result<String> {
-        use crate::utils::image::sync::get_image_type_and_base64_string;
+        use crate::utils::image::get_image_type_and_base64_string;
 
         let (image_type, base64_string) = get_image_type_and_base64_string(image_path).await?;
         let url = format!("{}?key={}", self.url, self.key);
