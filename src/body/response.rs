@@ -46,9 +46,48 @@ pub struct Candidate {
     /// Output only. Attribution information for sources that contributed to a grounded answer.
     /// This field is populated for GenerateAnswer calls.
     #[serde(rename = "groundingAttributions")]
+    #[deprecated(since = "1.0.0")]
     pub grounding_attributions: Option<Vec<GroundingAttribution>>,
     /// Output only. Index of the candidate in the list of response candidates.
-    pub index: isize,
+    pub index: Option<isize>,
+    /// Output only.
+    #[serde(rename = "avgLogprobs")]
+    pub avg_logprobs: Option<f64>,
+    /// Output only. Log-likelihood scores for the response tokens and top tokens
+    #[serde(rename = "logprobsResult")]
+    pub logprobs_result: Option<LogprobsResult>,
+}
+
+/// Logprobs Result
+#[derive(Serialize, Deserialize)]
+pub struct LogprobsResult {
+    /// Length = total number of decoding steps.
+    #[serde(rename = "topCandidates")]
+    pub top_candidates: Vec<TopCandidates>,
+    /// Length = total number of decoding steps. The chosen candidates may or may not be in topCandidates.
+    #[serde(rename = "chosenCandidates")]
+    pub chosen_candidates: Vec<Candidate1>,
+}
+
+/// Candidates with top log probabilities at each decoding step.
+#[derive(Serialize, Deserialize)]
+pub struct TopCandidates {
+    /// Sorted by log probability in descending order.
+    pub candidates: Vec<Candidate1>,
+}
+
+/// Candidate for the logprobs token and score.
+#[derive(Serialize, Deserialize)]
+#[serde(rename = "candidate")]
+pub struct Candidate1 {
+    /// The candidate’s token string value.
+    pub token: Option<String>,
+    /// The candidate’s token id value.
+    #[serde(rename = "tokenId")]
+    pub token_id: Option<isize>,
+    /// The candidate's log probability.
+    #[serde(rename = "logProbability")]
+    pub log_probability: Option<f64>,
 }
 
 /// Defines the reason why the model stopped generating tokens.
