@@ -25,8 +25,6 @@ pub async fn get_models(key: String) -> Result<Vec<Model>> {
 #[cfg(test)]
 mod tests {
 
-    use std::env;
-
     use body::{
         request::{GeminiRequestBody, GenerationConfig},
         Content, Part, Role,
@@ -54,7 +52,10 @@ mod tests {
     }
 
     #[tokio::test]
+    #[cfg(feature = "network_test")]
     async fn test_get_models() {
+        use std::env;
+
         let key = env::var("GEMINI_KEY");
         assert!(key.is_ok());
         let models = get_models(key.unwrap()).await.unwrap();

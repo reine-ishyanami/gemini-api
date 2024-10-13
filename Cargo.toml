@@ -17,5 +17,6 @@ base64 = { version = "0.22.1", optional = true }
 
 [features]
 default = []
+network_test = []
 blocking = ["reqwest/blocking"]
 image_analysis = ["image", "base64"]
