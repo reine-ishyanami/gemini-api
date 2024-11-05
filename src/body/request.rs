@@ -6,6 +6,7 @@ use super::Content;
 
 /// The request body contains data with the following structure
 #[derive(Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct GeminiRequestBody {
     /// Required. The content of the current conversation with the model.
     /// For single-turn queries, this is a single instance.
@@ -21,7 +22,7 @@ pub struct GeminiRequestBody {
     pub tools: Option<Vec<Tool>>,
     /// Optional. Tool configuration for any Tool specified in the request. Refer to the Function calling guide for a
     /// usage example.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "toolConfig")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tool_config: Option<ToolConfig>,
     /// Optional. A list of unique SafetySetting instances for blocking unsafe content.
     /// This will be enforced on the GenerateContentRequest.contents and GenerateContentResponse.candidates.
@@ -33,47 +34,48 @@ pub struct GeminiRequestBody {
     /// HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT, HARM_CATEGORY_HARASSMENT are supported.
     /// Refer to the guide for detailed information on available safety settings.
     /// Also refer to the Safety guidance to learn how to incorporate safety considerations in your AI applications.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "safetySettings")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub safety_settings: Option<Vec<SafetySetting>>,
     /// Optional. Developer set system instruction(s). Currently, text only.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "systemInstruction")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub system_instruction: Option<Content>,
     /// Optional. Configuration options for model generation and outputs.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "generationConfig")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub generation_config: Option<GenerationConfig>,
     /// Optional. The name of the content cached to use as context to serve the prediction. Format:
     /// cachedContents/{cachedContent}
-    #[serde(skip_serializing_if = "Option::is_none", rename = "cachedContent")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cached_content: Option<String>,
 }
 
 /// Configuration options for model generation and outputs. Not all parameters are configurable for every model.
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GenerationConfig {
     /// Optional. The set of character sequences (up to 5) that will stop output generation.
     /// If specified, the API will stop at the first appearance of a stop_sequence.
     /// The stop sequence will not be included as part of the response.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "stopSequences")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub stop_sequences: Option<Vec<String>>,
     /// Optional. MIME type of the generated candidate text. Supported MIME types are: text/plain: (default) Text
     /// output. application/json: JSON response in the response candidates. Refer to the docs for a list of all
     /// supported text MIME types.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "responseMimeType")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub response_mime_type: Option<String>,
     /// Optional. Output schema of the generated candidate text. Schemas must be a subset of the OpenAPI schema and can
     /// be objects, primitives or arrays. If set, a compatible responseMimeType must also be set. Compatible MIME
     /// types: application/json: Schema for JSON response. Refer to the JSON text generation guide for more
     /// details.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "responseSchema")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub response_schema: Option<Schema>,
     /// Optional. Number of generated responses to return.
     /// Currently, this value can only be set to 1. If unset, this will default to 1.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "candidateCount")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub candidate_count: Option<isize>,
     /// Optional. The maximum number of tokens to include in a response candidate.
     /// Note: The default value varies by model, see the Model.output_token_limit attribute of the Model returned from
     /// the getModel function.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "maxOutputTokens")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_output_tokens: Option<isize>,
     /// Optional. Controls the randomness of the output.
     /// Note: The default value varies by model, see the Model.temperature attribute of the Model returned from the
@@ -88,7 +90,7 @@ pub struct GenerationConfig {
     /// Note: The default value varies by Model and is specified by theModel.top_p attribute returned from the getModel
     /// function. An empty topK attribute indicates that the model doesn't apply top-k sampling and doesn't allow
     /// setting topK on requests.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "topP")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub top_p: Option<f64>,
     /// Optional. The maximum number of tokens to consider when sampling.
     /// Gemini models use Top-p (nucleus) sampling or a combination of Top-k and nucleus sampling. Top-k sampling
@@ -96,7 +98,7 @@ pub struct GenerationConfig {
     /// setting. Note: The default value varies by Model and is specified by theModel.top_p attribute returned from
     /// the getModel function. An empty topK attribute indicates that the model doesn't apply top-k sampling and
     /// doesn't allow setting topK on requests.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "topK")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub top_k: Option<isize>,
 }
 
@@ -120,6 +122,7 @@ impl Default for GenerationConfig {
 /// A Tool is a piece of code that enables the system tointeract with external systems to perform an action, or set of
 /// actions, outside of knowledge and scope of the model.
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Tool {
     /// Optional. A list of FunctionDeclarations available to the model that can be used for function calling.
     /// The model or system does not execute the function.
@@ -128,10 +131,10 @@ pub struct Tool {
     /// [FunctionCall][content.part.function_call] in the response. The next conversation turn may contain a
     /// [FunctionResponse][content.part.function_response] with the [content.role] "function" generation context for
     /// the next model turn.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "functionDeclarations")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub function_declarations: Option<Vec<FunctionDeclaration>>,
     /// Optional. Enables the model to execute code as part of generation.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "codeExecution")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub code_execution: Option<CodeExecution>,
 }
 
@@ -159,6 +162,7 @@ pub struct FunctionDeclaration {
 /// These types can be objects, but also primitives and arrays.
 /// Represents a select subset of an OpenAPI 3.0 schema object.
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Schema {
     /// Required. Data type.
     #[serde(rename = "type")]
@@ -180,7 +184,7 @@ pub struct Schema {
     #[serde(skip_serializing_if = "Option::is_none", rename = "enum")]
     pub enum0: Option<Vec<String>>,
     /// Optional. Maximum number of the elements for Type.ARRAY.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "maxItems")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_items: Option<String>,
     /// Optional. Properties of Type.OBJECT.
     /// An object containing a list of "key": value pairs.
@@ -230,14 +234,16 @@ pub struct CodeExecution;
 
 /// The Tool configuration containing parameters for specifying Tool use in the request.
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ToolConfig {
     /// Optional. Function calling config.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "functionCallingConfig")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub function_calling_config: Option<FunctionCallingConfig>,
 }
 
 /// Configuration for specifying function calling behavior.
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct FunctionCallingConfig {
     /// Optional. Specifies the mode in which function calling should execute. If unspecified, the default value will
     /// be set to AUTO.
@@ -246,7 +252,7 @@ pub struct FunctionCallingConfig {
     /// Optional. A set of function names that, when provided, limits the functions the model will call.
     /// This should only be set when the Mode is ANY. Function names should match [FunctionDeclaration.name].
     /// With mode set to ANY, model will predict a function call from the set of function names provided.
-    #[serde(skip_serializing_if = "Option::is_none", rename = "allowedFunctionNames")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_function_names: Option<Vec<String>>,
 }
 

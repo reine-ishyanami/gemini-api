@@ -11,61 +11,53 @@ use super::{request::HarmCategory, Content};
 ///  - Returns no candidates at all only if there was something wrong with the prompt (check promptFeedback)
 ///  - Reports feedback on each candidate in finishReason and safetyRatings.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GenerateContentResponse {
     /// Candidate responses from the model.
     pub candidates: Vec<Candidate>,
     /// Returns the prompt's feedback related to the content filters.
-    #[serde(rename = "promptFeedback")]
     pub prompt_feedback: Option<PromptFeedback>,
     /// Output only. Metadata on the generation requests' token usage.
-    #[serde(rename = "usageMetadata")]
     pub usage_metadata: UsageMetadata,
 }
 
 /// A response candidate generated from the model.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Candidate {
     /// Output only. Generated content returned from the model.
     pub content: Content,
     /// Optional. Output only. The reason why the model stopped generating tokens.
     /// If empty, the model has not stopped generating tokens.
-    #[serde(rename = "finishReason")]
     pub finish_reason: Option<FinishReason>,
     /// List of ratings for the safety of a response candidate.
     /// There is at most one rating per category.
-    #[serde(rename = "safetyRatings")]
-    pub safety_ratings: Vec<SafetyRating>,
+    pub safety_ratings: Option<Vec<SafetyRating>>,
     /// Output only. Citation information for model-generated candidate.
     /// This field may be populated with recitation information for any text included in the content.
     /// These are passages that are "recited" from copyrighted material in the foundational LLM's training data.
-    #[serde(rename = "citationMetadata")]
     pub citation_metadata: Option<CitationMetadata>,
     /// Output only. Token count for this candidate.
-    #[serde(rename = "tokenCount")]
     pub token_count: Option<isize>,
     /// Output only. Attribution information for sources that contributed to a grounded answer.
     /// This field is populated for GenerateAnswer calls.
-    #[serde(rename = "groundingAttributions")]
     #[deprecated(since = "1.0.0")]
     pub grounding_attributions: Option<Vec<GroundingAttribution>>,
     /// Output only. Index of the candidate in the list of response candidates.
     pub index: Option<isize>,
     /// Output only.
-    #[serde(rename = "avgLogprobs")]
     pub avg_logprobs: Option<f64>,
     /// Output only. Log-likelihood scores for the response tokens and top tokens
-    #[serde(rename = "logprobsResult")]
     pub logprobs_result: Option<LogprobsResult>,
 }
 
 /// Logprobs Result
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct LogprobsResult {
     /// Length = total number of decoding steps.
-    #[serde(rename = "topCandidates")]
     pub top_candidates: Vec<TopCandidates>,
     /// Length = total number of decoding steps. The chosen candidates may or may not be in topCandidates.
-    #[serde(rename = "chosenCandidates")]
     pub chosen_candidates: Vec<Candidate1>,
 }
 
@@ -78,15 +70,13 @@ pub struct TopCandidates {
 
 /// Candidate for the logprobs token and score.
 #[derive(Serialize, Deserialize)]
-#[serde(rename = "candidate")]
+#[serde(rename = "candidate", rename_all = "camelCase")]
 pub struct Candidate1 {
     /// The candidate’s token string value.
     pub token: Option<String>,
     /// The candidate’s token id value.
-    #[serde(rename = "tokenId")]
     pub token_id: Option<isize>,
     /// The candidate's log probability.
-    #[serde(rename = "logProbability")]
     pub log_probability: Option<f64>,
 }
 
@@ -169,39 +159,35 @@ pub enum HarmProbability {
 
 /// Metadata on the generation request's token usage.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UsageMetadata {
     /// Number of tokens in the prompt. When cachedContent is set, this is still the total effective prompt size
     /// meaning this includes the number of tokens in the cached content.
-    #[serde(rename = "promptTokenCount")]
     pub prompt_token_count: isize,
     /// Number of tokens in the cached part of the prompt (the cached content)
-    #[serde(rename = "cachedContentTokenCount")]
     pub cached_content_token_count: Option<isize>,
     /// Total number of tokens across all the generated response candidates.
-    #[serde(rename = "candidatesTokenCount")]
     pub candidates_token_count: isize,
     /// Total token count for the generation request (prompt + response candidates).
-    #[serde(rename = "totalTokenCount")]
     pub total_token_count: isize,
 }
 
 /// A collection of source attributions for a piece of content.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CitationMetadata {
     /// Citations to sources for a specific response.
-    #[serde(rename = "citationSources")]
     pub citation_sources: Vec<CitationSource>,
 }
 
 /// A citation to a source for a portion of a specific response.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CitationSource {
     /// Optional. Start of segment of the response that is attributed to this source.
     /// Index indicates the start of the segment, measured in bytes.
-    #[serde(rename = "startIndex")]
     pub start_index: Option<isize>,
     /// Optional. End of the attributed segment, exclusive.
-    #[serde(rename = "endIndex")]
     pub end_index: Option<isize>,
     /// Optional. URI that is attributed as a source for a portion of the text.
     pub uri: Option<String>,
@@ -212,9 +198,9 @@ pub struct CitationSource {
 
 /// Attribution for a source that contributed to an answer.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GroundingAttribution {
     /// Output only. Identifier for the source contributing to this attribution.
-    #[serde(rename = "sourceId")]
     pub source_id: AttributionSourceId,
     /// Grounding source content that makes up this attribution.
     pub content: Content,
@@ -222,23 +208,21 @@ pub struct GroundingAttribution {
 
 /// Identifier for the source contributing to this attribution.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AttributionSourceId {
     /// Identifier for an inline passage.
-    #[serde(rename = "groundingPassage")]
     pub grounding_passage: GroundingPassageId,
     /// Identifier for a Chunk fetched via Semantic Retriever.
-    #[serde(rename = "semanticRetrieverChunk")]
     pub semantic_retriever_chunk: SemanticRetrieverChunk,
 }
 
 /// Identifier for a part within a GroundingPassage.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GroundingPassageId {
     /// Output only. ID of the passage matching the GenerateAnswerRequest's GroundingPassage.id.
-    #[serde(rename = "passageId")]
     pub passage_id: String,
     /// Output only. Index of the part within the GenerateAnswerRequest's GroundingPassage.content.
-    #[serde(rename = "partIndex")]
     pub part_index: isize,
 }
 
@@ -255,12 +239,11 @@ pub struct SemanticRetrieverChunk {
 
 /// A set of the feedback metadata the prompt specified in GenerateContentRequest.content.
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PromptFeedback {
     /// Optional. If set, the prompt was blocked and no candidates are returned. Rephrase the prompt.
-    #[serde(rename = "blockReason")]
     pub block_reason: Option<BlockReason>,
     /// Ratings for safety of the prompt. There is at most one rating per category.
-    #[serde(rename = "safetyRatings")]
     pub safety_ratings: SafetyRating,
 }
 
@@ -288,42 +271,38 @@ pub enum BlockReason {
 ///
 /// If successful, the response body contains data with the following structure
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ModelsResponse {
     /// The returned Models.
     pub models: Vec<Model>,
     /// A token, which can be sent as pageToken to retrieve the next page.
     /// If this field is omitted, there are no more pages.
-    #[serde(rename = "nextPageToken")]
     pub next_page_token: Option<String>,
 }
 
 /// Information about a Generative Language Model.
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Model {
     /// Required. The resource name of the Model. Refer to Model variants for all allowed values.
     pub name: String,
     /// Required. The name of the base model, pass this to the generation request.
-    #[serde(rename = "baseModelId")]
     pub base_model_id: Option<String>,
     /// Required. The version number of the model.
     /// This represents the major version (1.0 or 1.5)
     pub version: String,
     /// The human-readable name of the model. E.g. "Gemini 1.5 Flash".
     /// The name can be up to 128 characters long and can consist of any UTF-8 characters.
-    #[serde(rename = "displayName")]
     pub display_name: String,
     /// A short description of the model.
     pub description: String,
     /// Maximum number of input tokens allowed for this model.
-    #[serde(rename = "inputTokenLimit")]
     pub input_token_limit: isize,
     /// Maximum number of output tokens available for this model.
-    #[serde(rename = "outputTokenLimit")]
     pub output_token_limit: isize,
     /// The model's supported generation methods.
     /// The corresponding API method names are defined as Pascal case strings, such as generateMessage and
     /// generateContent.
-    #[serde(rename = "supportedGenerationMethods")]
     pub supported_generation_methods: Vec<String>,
     /// Controls the randomness of the output.
     /// Values can range over [0.0,maxTemperature], inclusive. A higher value will produce responses that are more
@@ -331,17 +310,14 @@ pub struct Model {
     /// value specifies default to be used by the backend while making the call to the model.
     pub temperature: Option<f64>,
     /// The maximum temperature this model can use.
-    #[serde(rename = "maxTemperature")]
     pub max_temperature: Option<f64>,
     /// For Nucleus sampling.
     /// Nucleus sampling considers the smallest set of tokens whose probability sum is at least topP. This value
     /// specifies default to be used by the backend while making the call to the model.
-    #[serde(rename = "topP")]
     pub top_p: Option<f64>,
     /// For Top-k sampling.
     /// Top-k sampling considers the set of topK most probable tokens. This value specifies default to be used by the
     /// backend while making the call to the model. If empty, indicates the model doesn't use top-k sampling, and topK
     /// isn't allowed as a generation parameter.
-    #[serde(rename = "topK")]
     pub top_k: Option<isize>,
 }
