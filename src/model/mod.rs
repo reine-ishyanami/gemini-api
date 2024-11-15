@@ -471,10 +471,10 @@ impl Gemini {
         use image::EncodableLayout;
         use std::{fs::File, io::Read};
 
-        use crate::utils::image::blocking::get_image_type_and_base64_string;
+        use crate::utils::image::get_image_type_and_base64_string;
         use crate::utils::image::guess_image_format;
         if !self.conversation {
-            let (image_type, base64_string) = get_image_type_and_base64_string(image_path).unwrap();
+            let (image_type, base64_string) = get_image_type_and_base64_string(image_path).await?;
             let url = format!("{}?key={}", self.url, self.key);
 
             // 请求内容

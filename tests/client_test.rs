@@ -1,4 +1,3 @@
-#![cfg(feature = "network_test")]
 #![allow(deprecated)]
 
 use std::env;
@@ -6,9 +5,11 @@ use std::env;
 use anyhow::Result;
 use gemini_api::model::Gemini;
 use gemini_api::param::LanguageModel;
+use tokio::time::{sleep, Duration};
 
 #[tokio::test]
 async fn test_chat_once() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -21,6 +22,7 @@ async fn test_chat_once() -> Result<()> {
 
 #[tokio::test]
 async fn test_chat_conversation() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -35,6 +37,7 @@ async fn test_chat_conversation() -> Result<()> {
 
 #[tokio::test]
 async fn test_chat_with_system_instruction() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -46,6 +49,7 @@ async fn test_chat_with_system_instruction() -> Result<()> {
 
 #[tokio::test]
 async fn test_chat_conversation_with_system_instruction() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -60,6 +64,7 @@ async fn test_chat_conversation_with_system_instruction() -> Result<()> {
 #[tokio::test]
 #[cfg(feature = "image_analysis")]
 async fn test_image_analysis() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -75,6 +80,7 @@ async fn test_image_analysis() -> Result<()> {
 #[tokio::test]
 #[cfg(feature = "image_analysis")]
 async fn test_image_analysis_network() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -89,6 +95,7 @@ async fn test_image_analysis_network() -> Result<()> {
 
 #[tokio::test]
 async fn test_send_simple_message_once() {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -100,6 +107,7 @@ async fn test_send_simple_message_once() {
 
 #[tokio::test]
 async fn test_send_simple_message_conversation() {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -117,6 +125,7 @@ async fn test_send_simple_message_conversation() {
 #[tokio::test]
 #[cfg(feature = "image_analysis")]
 async fn test_send_image_message() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
@@ -132,6 +141,7 @@ async fn test_send_image_message() -> Result<()> {
 #[tokio::test]
 #[cfg(feature = "image_analysis")]
 async fn test_send_image_message_network() -> Result<()> {
+    sleep(Duration::from_secs(60)).await;
     let key = env::var("GEMINI_KEY");
     assert!(key.is_ok());
     let mut client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);

@@ -52,7 +52,6 @@ mod tests {
     }
 
     #[tokio::test]
-    #[cfg(feature = "network_test")]
     async fn test_get_models() {
         use std::env;
 

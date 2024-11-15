@@ -1,4 +1,3 @@
-#![cfg(feature = "network_test")]
 #![allow(deprecated)]
 use std::env;
 
