@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// A Content includes a role field designating the producer of the Content and a parts field containing multi-part data
 /// that contains the content of the message turn.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Content {
     /// Ordered Parts that constitute a single message. Parts may have different MIME types.
     pub parts: Vec<Part>,
@@ -20,7 +20,7 @@ pub struct Content {
     pub role: Option<Role>,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Role {
     #[serde(rename = "user")]
     User,
@@ -33,13 +33,14 @@ pub enum Role {
 /// A Part consists of data which has an associated datatype. A Part can only contain one of the accepted types in
 /// Part.data. A Part must have a fixed IANA MIME type identifying the type and subtype of the media if the inlineData
 /// field is filled with raw bytes.
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Part {
     /// Inline text.
     #[serde(rename = "text")]
     Text(String),
     /// Inline media bytes.
     #[serde(rename = "inline_data")]
+    #[cfg(feature = "image_analysis")]
     InlineData {
         /// The IANA standard MIME type of the source data. Examples: - image/png - image/jpeg If an unsupported MIME
         /// type is provided, an error will be returned.
@@ -95,7 +96,7 @@ pub enum Part {
 }
 
 /// Supported programming languages for the generated code.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Language {
     /// Unspecified language. This value should not be used.
     #[serde(rename = "LANGUAGE_UNSPECIFIED")]
@@ -106,7 +107,7 @@ pub enum Language {
 }
 
 /// Enumeration of possible outcomes of the code execution.
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Outcome {
     /// Unspecified status. This value should not be used.
     #[serde(rename = "OUTCOME_UNSPECIFIED")]

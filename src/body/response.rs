@@ -10,7 +10,7 @@ use super::{request::HarmCategory, Content};
 ///  - Returns either all requested candidates or none of them
 ///  - Returns no candidates at all only if there was something wrong with the prompt (check promptFeedback)
 ///  - Reports feedback on each candidate in finishReason and safetyRatings.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GenerateContentResponse {
     /// Candidate responses from the model.
@@ -22,7 +22,7 @@ pub struct GenerateContentResponse {
 }
 
 /// A response candidate generated from the model.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Candidate {
     /// Output only. Generated content returned from the model.
@@ -52,7 +52,7 @@ pub struct Candidate {
 }
 
 /// Logprobs Result
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LogprobsResult {
     /// Length = total number of decoding steps.
@@ -62,14 +62,14 @@ pub struct LogprobsResult {
 }
 
 /// Candidates with top log probabilities at each decoding step.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TopCandidates {
     /// Sorted by log probability in descending order.
     pub candidates: Vec<Candidate1>,
 }
 
 /// Candidate for the logprobs token and score.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename = "candidate", rename_all = "camelCase")]
 pub struct Candidate1 {
     /// The candidate’s token string value.
@@ -81,7 +81,7 @@ pub struct Candidate1 {
 }
 
 /// Defines the reason why the model stopped generating tokens.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum FinishReason {
     /// Default value. This value is unused.
     #[serde(rename = "FINISH_REASON_UNSPECIFIED")]
@@ -124,7 +124,7 @@ pub enum FinishReason {
 /// The safety rating contains the category of harm and the harm probability level in that category for a piece of
 /// content. Content is classified for safety across a number of harm categories and the probability of the harm
 /// classification is included here.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SafetyRating {
     /// Required. The category for this rating.
     pub category: HarmCategory,
@@ -138,7 +138,7 @@ pub struct SafetyRating {
 ///
 /// The classification system gives the probability of the content being unsafe.
 /// This does not indicate the severity of harm for a piece of content.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum HarmProbability {
     /// Probability is unspecified.
     #[serde(rename = "HARM_PROBABILITY_UNSPECIFIED")]
@@ -158,7 +158,7 @@ pub enum HarmProbability {
 }
 
 /// Metadata on the generation request's token usage.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UsageMetadata {
     /// Number of tokens in the prompt. When cachedContent is set, this is still the total effective prompt size
@@ -173,7 +173,7 @@ pub struct UsageMetadata {
 }
 
 /// A collection of source attributions for a piece of content.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CitationMetadata {
     /// Citations to sources for a specific response.
@@ -181,7 +181,7 @@ pub struct CitationMetadata {
 }
 
 /// A citation to a source for a portion of a specific response.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CitationSource {
     /// Optional. Start of segment of the response that is attributed to this source.
@@ -197,7 +197,7 @@ pub struct CitationSource {
 }
 
 /// Attribution for a source that contributed to an answer.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GroundingAttribution {
     /// Output only. Identifier for the source contributing to this attribution.
@@ -207,7 +207,7 @@ pub struct GroundingAttribution {
 }
 
 /// Identifier for the source contributing to this attribution.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AttributionSourceId {
     /// Identifier for an inline passage.
@@ -217,7 +217,7 @@ pub struct AttributionSourceId {
 }
 
 /// Identifier for a part within a GroundingPassage.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GroundingPassageId {
     /// Output only. ID of the passage matching the GenerateAnswerRequest's GroundingPassage.id.
@@ -228,7 +228,7 @@ pub struct GroundingPassageId {
 
 /// Identifier for a Chunk retrieved via Semantic Retriever specified in the GenerateAnswerRequest using
 /// SemanticRetrieverConfig.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SemanticRetrieverChunk {
     /// Output only. Name of the source matching the request's SemanticRetrieverConfig.source. Example: corpora/123 or
     /// corpora/123/documents/abc
@@ -238,7 +238,7 @@ pub struct SemanticRetrieverChunk {
 }
 
 /// A set of the feedback metadata the prompt specified in GenerateContentRequest.content.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PromptFeedback {
     /// Optional. If set, the prompt was blocked and no candidates are returned. Rephrase the prompt.
@@ -248,7 +248,7 @@ pub struct PromptFeedback {
 }
 
 /// Specifies the reason why the prompt was blocked.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum BlockReason {
     /// Default value. This value is unused.
     #[serde(rename = "BLOCK_REASON_UNSPECIFIED")]
@@ -270,7 +270,7 @@ pub enum BlockReason {
 /// Response from ListModel containing a paginated list of Models.
 ///
 /// If successful, the response body contains data with the following structure
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ModelsResponse {
     /// The returned Models.
@@ -281,7 +281,7 @@ pub struct ModelsResponse {
 }
 
 /// Information about a Generative Language Model.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Model {
     /// Required. The resource name of the Model. Refer to Model variants for all allowed values.
