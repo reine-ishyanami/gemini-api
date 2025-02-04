@@ -133,9 +133,15 @@ pub struct Tool {
     /// the next model turn.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub function_declarations: Option<Vec<FunctionDeclaration>>,
+    /// Optional. Retrieval tool that is powered by Google search.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_search_retrieval: Option<GoogleSearchRetrieval>,
     /// Optional. Enables the model to execute code as part of generation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code_execution: Option<CodeExecution>,
+    /// Optional. GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_search: Option<GoogleSearch>,
 }
 
 /// Structured representation of a function declaration as defined by the OpenAPI 3.03 specification.
@@ -155,6 +161,10 @@ pub struct FunctionDeclaration {
     /// Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Schema>,
+    /// Optional. Describes the output from this function in JSON Schema format. Reflects the Open API 3.03 Response
+    /// Object. The Schema defines the type used for the response value of the function.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub response: Option<Schema>,
 }
 
 /// The Schema object allows the definition of input and output data types.
@@ -185,7 +195,10 @@ pub struct Schema {
     pub enum0: Option<Vec<String>>,
     /// Optional. Maximum number of the elements for Type.ARRAY.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_items: Option<String>,
+    pub max_items: Option<i64>,
+    /// Optional. Minimum number of the elements for Type.ARRAY.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min_items: Option<i64>,
     /// Optional. Properties of Type.OBJECT.
     /// An object containing a list of "key": value pairs.
     /// Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.
@@ -194,6 +207,10 @@ pub struct Schema {
     /// Optional. Required properties of Type.OBJECT.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<Vec<String>>,
+    /// Optional. The order of the properties. Not a standard field in open api spec. Used to determine the order of
+    /// the properties in the response.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub property_ordering: Option<Vec<String>>,
     /// Optional. Schema of the elements of Type.ARRAY.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Box<Schema>>,
@@ -224,6 +241,39 @@ pub enum Type {
     #[serde(rename = "OBJECT")]
     Object,
 }
+
+/// Tool to retrieve public web data for grounding, powered by Google.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleSearchRetrieval {
+    /// Specifies the dynamic retrieval configuration for the given source.
+    pub dynamic_retrieval_config: DynamicRetrievalConfig,
+}
+
+/// Describes the options to customize dynamic retrieval.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DynamicRetrievalConfig {
+    /// The mode of the predictor to be used in dynamic retrieval.
+    pub mode: DynamicRetrievalConfigMode,
+    /// The threshold to be used in dynamic retrieval. If not set, a system default value is used.
+    pub dynamic_threshold: isize,
+}
+
+/// Describes the options to customize dynamic retrieval.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub enum DynamicRetrievalConfigMode {
+    /// Always trigger retrieval.
+    #[serde(rename = "MODE_UNSPECIFIED")]
+    ModeUnspecified,
+    /// Run retrieval only when system decides it is necessary.
+    #[serde(rename = "MODE_DYNAMIC")]
+    ModeDynamic,
+}
+
+/// GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GoogleSearch;
 
 /// This type has no fields.
 ///
@@ -344,4 +394,7 @@ pub enum HarmBlockThreshold {
     /// All content will be allowed.
     #[serde(rename = "BLOCK_NONE")]
     BlockNone,
+    /// Turn off the safety filter.
+    #[serde(rename = "OFF")]
+    Off,
 }
