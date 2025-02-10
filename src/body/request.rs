@@ -374,6 +374,9 @@ pub enum HarmCategory {
     /// Dangerous content.
     #[serde(rename = "HARM_CATEGORY_DANGEROUS_CONTENT")]
     HarmCategoryDangerousContent,
+    /// Content that may be used to harm civic integrity.
+    #[serde(rename = "HARM_CATEGORY_CIVIC_INTEGRITY")]
+    HarmCategoryCivicIntegrity,
 }
 
 /// Block at and beyond a specified harm probability.

@@ -4,7 +4,7 @@ use serde_json;
 use crate::{
     body::{
         error::GenerateContentResponseError,
-        request::{GeminiRequestBody, GenerationConfig},
+        request::{GeminiRequestBody, GenerationConfig, SafetySetting},
         response::GenerateContentResponse,
         Content, Part, Role,
     },
@@ -25,6 +25,7 @@ pub struct Gemini {
     pub model: LanguageModel,
     pub contents: Vec<Content>,
     pub options: GenerationConfig,
+    pub safety_settings: Vec<SafetySetting>,
     pub system_instruction: Option<String>,
     pub conversation: bool,
     url: String,
@@ -88,11 +89,17 @@ impl Gemini {
         self.options = options;
     }
 
+    /// 安全设置
+    pub fn set_safety_settings(&mut self, settings: Vec<SafetySetting>) {
+        self.safety_settings = settings;
+    }
+
     /// 构建请求体
     fn build_request_body(&self, contents: Vec<Content>) -> GeminiRequestBody {
         GeminiRequestBody {
             contents,
             generation_config: Some(self.options.clone()),
+            safety_settings: Some(self.safety_settings.clone()),
             system_instruction: self.system_instruction.as_ref().map(|s| Content {
                 parts: vec![Part::Text(s.clone())],
                 role: None,
@@ -277,7 +284,7 @@ impl Gemini {
         use image::EncodableLayout;
         use std::{fs::File, io::Read};
 
-        use crate::utils::image::blocking::get_image_type_and_base64_string;
+        use crate::utils::image::get_image_type_and_base64_string;
         use crate::utils::image::guess_image_format;
         if !self.conversation {
             let (image_type, base64_string) = get_image_type_and_base64_string(image_path)?;

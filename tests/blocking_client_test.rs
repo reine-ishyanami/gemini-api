@@ -1,4 +1,4 @@
-#![allow(deprecated)]
+#![allow(deprecated, unused_imports)]
 use std::env;
 
 use anyhow::Result;

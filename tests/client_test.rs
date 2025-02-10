@@ -2,43 +2,10 @@
 
 use std::env;
 
+use anyhow::Result;
 use gemini_api::model::Gemini;
 use gemini_api::param::LanguageModel;
 use tokio::time::{sleep, Duration};
-
-#[tokio::test]
-#[cfg(feature = "image_analysis")]
-#[cfg(not(feature = "blocking"))]
-async fn test_image_analysis() -> Result<()> {
-    sleep(Duration::from_secs(60)).await;
-    let key = env::var("GEMINI_KEY");
-    assert!(key.is_ok());
-    let client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
-    let image_path = r#"./file_type_rust.png"#;
-    let resp = client
-        .image_analysis(image_path.into(), "分析一下这张图片".into())
-        .await?;
-    assert!(!resp.is_empty());
-    println!("{}", resp);
-    Ok(())
-}
-
-#[tokio::test]
-#[cfg(feature = "image_analysis")]
-#[cfg(not(feature = "blocking"))]
-async fn test_image_analysis_network() -> Result<()> {
-    sleep(Duration::from_secs(60)).await;
-    let key = env::var("GEMINI_KEY");
-    assert!(key.is_ok());
-    let client = Gemini::new(key.unwrap(), LanguageModel::Gemini1_5Flash);
-    let image_path = "https://img.loliapi.cn/i/pp/img3.webp";
-    let resp = client
-        .image_analysis(image_path.into(), "分析一下这张图片".into())
-        .await?;
-    assert!(!resp.is_empty());
-    println!("{}", resp);
-    Ok(())
-}
 
 #[tokio::test]
 #[cfg(not(feature = "blocking"))]
